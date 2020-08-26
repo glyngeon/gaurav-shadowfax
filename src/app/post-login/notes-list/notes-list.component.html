@@ -1,0 +1,83 @@
+<div class="home-container">
+    <app-navbar></app-navbar>
+
+    <div class="container-body">
+        <div class="headings">
+            <h2>Notes</h2>
+            <!-- <button class="button-class" (click)="addnote()">Create Notes</button> -->
+            <div class="icon-parents">
+                <i *ngIf="!showActionFlag" class="fas fa-plus icon-class" (click)="addnote()"></i>
+                <i *ngIf="showActionFlag" class="fas fa-minus icon-class" (click)="closeNoteForm()"></i>
+                <i class="fas fa-ellipsis-h icon-class three-dots"></i>
+                <i class="fas fa-bars icon-class" (click)="showSummary(true)"></i>
+            </div>
+        </div>
+
+        <div class="create-add-note" *ngIf="showActionFlag">
+
+            <!-- create form (Start) -->
+            <form class="font-size3 create-notes-form" name="notesForm" #notesForm="ngForm"
+                (ngSubmit)="notesForm.valid && onSubmit()" autocomplete="off">
+                <p class="title-heading">Title:</p>
+                <div class="notes-title-input">
+                    <input type="text" class="input-field" name="notesName" [(ngModel)]="createNotes.title"
+                        #notesName="ngModel" placeholder="Name this notes" minlength="5" maxlength="100" onKeyDown="if(event.keyCode === 32 && event.target.selectionStart === 0)
+                    return false;" required>
+                    <div *ngIf="notesName.invalid || (notesName.dirty)">
+                        <div *ngIf="notesName?.errors?.required &&(notesForm.submitted)" class="error-msg font-size3">
+                            Please enter note title</div>
+                        <div *ngIf="notesName?.errors?.minlength" class="error-msg font-size3">Notes Title should be
+                            contain 5 character.
+                        </div>
+                        <div *ngIf="createNotes.title?.length > 99" class="error-msg font-size3">notes title
+                            shouldn't contain more than 100 charater</div>
+                    </div>
+                </div>
+                <div class="notes-description">
+                    <p class="description-heading">Text:</p>
+                    <textarea type="text" class="notes-description-field" name="description"
+                        [(ngModel)]="createNotes.description" #description="ngModel" placeholder="About the notes"
+                        maxlength="500" onKeyDown="if(event.keyCode === 32 && event.target.selectionStart === 0)
+                    return false;"></textarea>
+                    <div *ngIf="createNotes.description?.length > 500" class="error-msg font-size3">notes
+                        Description shouldn't contain more than 500 charater</div>
+                </div>
+                <div class="font-size4 notes-submit">
+                    <button class="button-class" type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th class="date-time">Time Created</th>
+                </tr>
+                <tr *ngFor="let item of notesResponse; let i = index" (click)="editnote(i)">
+                    <td>{{ item.title}} </td>
+                    <td class="date-time">{{ item.dateTime | date: 'short' }}</td>
+                </tr>
+            </table>
+            <div *ngIf="showSummaryFlag" class="summary-outer">
+                <div class="summary-body">
+                    <div class="s-hearder">
+                        <h4>Summary</h4>
+                        <i class="fas fa-angle-up triangle-icon" (click)="showSummary(false)"></i>
+                    </div>
+                    <div class="summary-child">
+                        <div class="s-left">
+                            <h1>{{notesResponse.length}}</h1>
+                            <p>notes</p>
+                        </div>
+                        <div class="s-right">
+                            <p class="h-p2 p">last update</p>
+                            <p class="h-p1 h">{{lastUpdate | date: 'short'}}</p>
+                            <p class="h-p2 p">last note update</p>
+                            <p class="h">{{lastNoteUpate}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
